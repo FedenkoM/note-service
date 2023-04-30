@@ -24,7 +24,7 @@ public class UserManager implements UserDetailsManager {
     @Override
     public void createUser(UserDetails user) {
         var userToSave = (User) user;
-        userToSave.addRole(Role.USER);
+        userToSave.addRole(Role.ROLE_USER);
         userToSave.setPassword(passwordEncoder.encode(user.getPassword()));
         userToSave.setId(sequenceGenerator.generateSequence(User.SEQUENCE_NAME));
         userRepository.save(userToSave);

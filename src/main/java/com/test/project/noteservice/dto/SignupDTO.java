@@ -1,13 +1,8 @@
 package com.test.project.noteservice.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+public record SignupDTO(String firstName,
+                        String lastName,
+                        String email,
+                        String password) {
 
-@Getter
-@Setter
-public class SignupDTO {
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
 }

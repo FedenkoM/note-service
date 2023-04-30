@@ -28,23 +28,23 @@ public class AuthService {
 
     public TokenDTO registerUser(SignupDTO signupDTO) {
         var user = new User();
-        user.setEmail(signupDTO.getEmail());
-        user.setPassword(signupDTO.getPassword());
-        user.setFirstName(signupDTO.getFirstName());
-        user.setLastName(signupDTO.getLastName());
+        user.setEmail(signupDTO.email());
+        user.setPassword(signupDTO.password());
+        user.setFirstName(signupDTO.firstName());
+        user.setLastName(signupDTO.lastName());
 
         userDetailsManager.createUser(user);
-        var authentication = UsernamePasswordAuthenticationToken.authenticated(user, signupDTO.getPassword(), user.getAuthorities());
+        var authentication = UsernamePasswordAuthenticationToken.authenticated(user, signupDTO.password(), user.getAuthorities());
         return tokenGenerator.createToken(authentication);
     }
 
     public TokenDTO loginUser(LoginDTO loginDTO) {
-        if (userRepository.existsByEmail(loginDTO.getEmail())) {
+        if (userRepository.existsByEmail(loginDTO.email())) {
             var authentication = daoAuthenticationProvider
                     .authenticate(UsernamePasswordAuthenticationToken
-                            .unauthenticated(loginDTO.getEmail(), loginDTO.getPassword()));
+                            .unauthenticated(loginDTO.email(), loginDTO.password()));
             return tokenGenerator.createToken(authentication);
         }
-        throw new NotFoundException("Not registered User: " + loginDTO.getEmail());
+        throw new NotFoundException("Not registered User: " + loginDTO.email());
     }
 }

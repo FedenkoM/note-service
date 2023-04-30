@@ -62,7 +62,7 @@ public class WebSecurity {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .antMatchers(PUBLIC_URL).permitAll()
-                        .antMatchers(HttpMethod.POST, "/api/v1/notes/**/likes").hasRole("USER")
+//                        .antMatchers(HttpMethod.POST, "/api/v1/notes/**/likes").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .csrf().disable()

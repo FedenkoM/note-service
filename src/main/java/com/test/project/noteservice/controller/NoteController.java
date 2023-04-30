@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -43,6 +44,7 @@ public class NoteController {
         noteService.toggleLikeForAuthorizedUser(noteId, userId);
     }
 
+    @PreAuthorize("hasAuthority('READ')")
     @Operation(summary = "Only authorized user allow",
                description = "Add/Remove like from note.")
     @SecurityRequirement(name = "Bearer Authentication")

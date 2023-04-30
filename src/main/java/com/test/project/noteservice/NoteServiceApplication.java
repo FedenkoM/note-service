@@ -1,5 +1,6 @@
 package com.test.project.noteservice;
 
+import com.test.project.noteservice.entity.Role;
 import com.test.project.noteservice.entity.User;
 import com.test.project.noteservice.repository.UserRepository;
 import com.test.project.noteservice.utils.sequence.SequenceGeneratorService;
@@ -29,14 +30,17 @@ public class NoteServiceApplication {
 		return new BCryptPasswordEncoder();
 	}
 
+	@Bean
 	CommandLineRunner commandLineRunner(UserRepository userRepository, SequenceGeneratorService sequenceGenerator) {
 		return args -> {
 			var admin = new User();
 			admin.setId(sequenceGenerator.generateSequence(User.SEQUENCE_NAME));
 			admin.setEmail("admin@mail.com");
-			admin.setPassword(passwordEncoder().encode("admin"));
+			admin.setPassword(passwordEncoder().encode("password"));
 			admin.setFirstName("Admin");
 			admin.setLastName("Admin");
+			admin.addRole(Role.ROLE_ADMIN);
+			if (userRepository.existsByEmail(admin.getEmail())) return;
 			userRepository.save(admin);
 		};
 	}

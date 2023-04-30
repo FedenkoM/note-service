@@ -1,16 +1,18 @@
 package com.test.project.noteservice.entity;
 
 
+import lombok.Getter;
+
+import java.util.Set;
+
 public enum Role {
-    USER("ROLE_USER"),
-    ADMIN("ROLE_ADMIN");
+    ROLE_USER(Set.of(Permission.READ)),
+    ROLE_ADMIN(Set.of(Permission.READ, Permission.WRITE, Permission.UPDATE));
 
-    private String authority;
-    Role(String authority) {
-        this.authority = authority;
+    Role(Set<Permission> permissions) {
+        this.permissions = permissions;
     }
 
-    public String getAuthority() {
-        return authority;
-    }
+    @Getter
+    private Set<Permission> permissions;
 }
