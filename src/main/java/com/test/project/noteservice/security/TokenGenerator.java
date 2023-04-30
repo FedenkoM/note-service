@@ -29,7 +29,6 @@ public class TokenGenerator {
         User user = (User) authentication.getPrincipal();
         Instant now = Instant.now();
 
-
         JwtClaimsSet claimsSet = JwtClaimsSet.builder()
                 .issuer("noteService")
                 .issuedAt(now)
@@ -68,8 +67,6 @@ public class TokenGenerator {
                     MessageFormat.format("principal {0} is not of User type", authentication.getPrincipal().getClass())
             );
         }
-
-
 
         TokenDTO tokenDTO = new TokenDTO();
         tokenDTO.setAccessToken(createAccessToken(authentication));

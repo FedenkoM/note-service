@@ -29,9 +29,9 @@ import org.springframework.security.oauth2.server.resource.web.access.BearerToke
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+@Slf4j
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@Slf4j
 public class WebSecurity {
     @Setter(onMethod_ = @Autowired)
     private JwtToUserConverter jwtToUserConverter;
