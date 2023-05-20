@@ -1,19 +1,19 @@
 version: "3.8"
 services:
-  note-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: my-service:latest
-    container_name: note-service
-    ports:
-      - "8085:8085"
-    environment:
-      - SERVER_PORT=8085
-      - SPRING_DATA_MONGODB_URI=mongodb://root:password@mongo:27017/?authSource=admin
-      - SPRING_DATA_MONGODB_DATABASE=note
-    depends_on:
-      - mongo
+#  note-service:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    image: my-service:latest
+#    container_name: note-service
+#    ports:
+#      - "8085:8085"
+#    environment:
+#      - SERVER_PORT=8085
+#      - SPRING_DATA_MONGODB_URI=mongodb://root:password@mongo:27017/?authSource=admin
+#      - SPRING_DATA_MONGODB_DATABASE=note
+#    depends_on:
+#      - mongo
   mongo:
     image: mongo:5.0
     container_name: mongo

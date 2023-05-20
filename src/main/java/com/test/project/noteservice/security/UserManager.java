@@ -32,7 +32,8 @@ public class UserManager implements UserDetailsManager {
 
     @Override
     public void updateUser(UserDetails user) {
-
+        var updatedUser = (User) user;
+        userRepository.save(updatedUser);
     }
 
     @Override

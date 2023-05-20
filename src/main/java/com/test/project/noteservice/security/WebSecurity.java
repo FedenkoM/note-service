@@ -54,16 +54,17 @@ public class WebSecurity {
             "/v3/api-docs/swagger-config",
             "/api/v1/auth/*",
             "/api/v1/notes",
-            "/api/v1/notes/**"
+            "/api/v1/notes/**",
+            "/actuator/**",
+            "/api/v1/register/**"
     };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .antMatchers(PUBLIC_URL).permitAll()
-//                        .antMatchers(HttpMethod.POST, "/api/v1/notes/**/likes").hasRole("USER")
-                        .anyRequest().authenticated()
+                                .antMatchers(PUBLIC_URL).permitAll()
+                                .anyRequest().authenticated()
                 )
                 .csrf().disable()
                 .cors().disable()

@@ -20,6 +20,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
+    @Deprecated(since = "Registration controller was implemented")
+    @Operation(hidden = true, description = "Use Registration controller")
     public ResponseEntity<TokenDTO> register(@RequestBody SignupDTO signupDTO) {
         return ResponseEntity.ok(authService.registerUser(signupDTO));
     }

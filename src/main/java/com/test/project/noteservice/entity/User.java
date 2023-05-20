@@ -1,6 +1,5 @@
 package com.test.project.noteservice.entity;
 
-import com.mongodb.lang.NonNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -12,9 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -36,6 +33,7 @@ public class User implements UserDetails {
     private String password;
     @Setter(AccessLevel.PRIVATE)
     private List<Role> roles = new ArrayList<>();
+    private boolean enabled;
 
     public void addRole(Role role) {
         this.roles.add(role);
@@ -79,6 +77,11 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.enabled;
+    }
+
+    @ToString.Include(name = "password")
+    private String maskPassword() {
+        return "********";
     }
 }
