@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    // TODO: Improve exception handling
+
     private static final String EXCEPTION_LOG_MESSAGE = "Global Exception Handler invoke: {}";
 
     @ExceptionHandler(NotFoundException.class)

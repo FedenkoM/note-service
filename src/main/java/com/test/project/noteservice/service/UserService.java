@@ -1,5 +1,6 @@
 package com.test.project.noteservice.service;
 
+import com.test.project.noteservice.dto.PasswordDTO;
 import com.test.project.noteservice.dto.SignupDTO;
 import com.test.project.noteservice.entity.User;
 import com.test.project.noteservice.entity.VerificationToken;
@@ -22,6 +23,8 @@ public interface UserService {
     Optional<User> getUserByPasswordResetToken(String token);
 
     boolean checkIfValidOldPassword(User user, String oldPassword);
+
+    String saveNewPassword(String token, PasswordDTO passwordDTO);
 
     void changePassword(User user, String newPassword);
 

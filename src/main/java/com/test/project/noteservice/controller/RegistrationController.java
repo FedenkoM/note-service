@@ -1,6 +1,6 @@
 package com.test.project.noteservice.controller;
 
-import com.test.project.noteservice.dto.PasswordModel;
+import com.test.project.noteservice.dto.PasswordDTO;
 import com.test.project.noteservice.dto.SignupDTO;
 import com.test.project.noteservice.entity.User;
 import com.test.project.noteservice.entity.VerificationToken;
@@ -10,10 +10,10 @@ import com.test.project.noteservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -26,15 +26,14 @@ public class RegistrationController {
     private final ApplicationEventPublisher publisher;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public String registerUser(@RequestBody SignupDTO userModel, final HttpServletRequest request) {
         var optionalUser = userService.findByEmail(userModel.email());
         var user = optionalUser.orElseGet(() -> userService.registerUser(userModel));
         if (user.isEnabled()) {
             return String.format("User with email: [%s] already registered in application", user.getEmail());
         }
-        publisher.publishEvent(new RegistrationCompleteEvent(
-                user,
-                applicationUrl(request)
+        publisher.publishEvent(new RegistrationCompleteEvent(user, applicationUrl(request)
         ));
         return "Success";
     }
@@ -58,8 +57,8 @@ public class RegistrationController {
     }
 
     @PostMapping("/resetPassword")
-    public String resetPassword(@RequestBody PasswordModel passwordModel, HttpServletRequest request) {
-        var user = userService.findByEmail(passwordModel.getEmail());
+    public String resetPassword(@RequestBody PasswordDTO passwordDTO, HttpServletRequest request) {
+        var user = userService.findByEmail(passwordDTO.email());
         String url = "";
         if (user.isPresent()) {
             String token = UUID.randomUUID().toString();
@@ -71,63 +70,39 @@ public class RegistrationController {
 
     @PostMapping("/savePassword")
     public String savePassword(@RequestParam("token") String token,
-                               @RequestBody PasswordModel passwordModel) {
-        String result = userService.validatePasswordResetToken(token);
-        if (!result.equalsIgnoreCase("valid")) {
-            return "Invalid Token";
-        }
-        Optional<User> user = userService.getUserByPasswordResetToken(token);
-        if (user.isPresent()) {
-            userService.changePassword(user.get(), passwordModel.getNewPassword());
-            return "Password Reset Successfully";
-        } else {
-            return "Invalid Token";
-        }
+                               @RequestBody PasswordDTO passwordDTO) {
+        log.info("New password was saved.");
+        return userService.saveNewPassword(token, passwordDTO);
     }
 
     @PostMapping("/changePassword")
-    public String changePassword(@RequestBody PasswordModel passwordModel) {
-        User user = userService.findByEmail(passwordModel.getEmail())
+    public String changePassword(@RequestBody PasswordDTO passwordDTO) {
+        User user = userService.findByEmail(passwordDTO.email())
                 .orElseThrow(() ->
-                        new NotFoundException("User not found with email: " + passwordModel.getEmail()));
-        if (!userService.checkIfValidOldPassword(user, passwordModel.getOldPassword())) {
+                        new NotFoundException("User not found with email: " + passwordDTO.email()));
+        if (!userService.checkIfValidOldPassword(user, passwordDTO.oldPassword())) {
             return "Invalid Old Password";
         }
         //Save New Password
-        userService.changePassword(user, passwordModel.getNewPassword());
+        userService.changePassword(user, passwordDTO.newPassword());
         return "Password Changed Successfully";
     }
 
     private String passwordResetTokenMail(User user, String applicationUrl, String token) {
-        String url =
-                applicationUrl
-                        + "register/savePassword?token="
-                        + token;
-
+        String url = applicationUrl + "register/savePassword?token=" + token;
         //sendVerificationEmail()
-        log.info("Click the link to Reset your Password: {}",
-                url);
+        log.info("Click the link to Reset your Password: {}", url);
         return url;
     }
 
-
     private void resendVerificationTokenMail(User user, String applicationUrl, VerificationToken verificationToken) {
-        String url =
-                applicationUrl
-                        + "/register/verifyRegistration?token="
-                        + verificationToken.getToken();
-
+        String url = applicationUrl + "/register/verifyRegistration?token=" + verificationToken.getToken();
         //sendVerificationEmail()
         log.info("Click the link to verify your account: {}",
                 url);
     }
 
-
     private String applicationUrl(HttpServletRequest request) {
-        return "http://" +
-                request.getServerName() +
-                ":" +
-                request.getServerPort() +
-                request.getContextPath();
+        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
 }
